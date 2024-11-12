@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтерактивний календар подій</title>
+    <style>
+        /* Базовий стиль календаря */
+        #calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .day { padding: 10px; border: 1px solid #ccc; cursor: pointer; }
+        .header { font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Календар подій</h1>
+    <div id="calendar"></div>
+
+    <div id="eventForm" style="display:none;">
+        <h2>Додати/Редагувати подію</h2>
+        <input type="text" id="eventTitle" placeholder="Назва події">
+        <input type="date" id="eventDate">
+        <button onclick="saveEvent()">Зберегти</button>
+        <button onclick="deleteEvent()">Видалити</button>
+    </div>
+
+    <script>
+        const calendar = document.getElementById('calendar');
+        const eventForm = document.getElementById('eventForm');
+        const eventTitle = document.getElementById('eventTitle');
+        const eventDate = document.getElementById('eventDate');
+        let currentEventDate = null;
+
+        function loadCalendar() {
+            calendar.innerHTML = '';
+            const daysInMonth = 30; // Для прикладу, 30 днів
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.classList.add('day');
+                dayDiv.textContent = day;
+                dayDiv.onclick = () => showEventForm(day);
+                calendar.appendChild(dayDiv);
+            }
+        }
+
+        function showEventForm(day) {
+            eventForm.style.display = 'block';
+            currentEventDate = `2024-11-${String(day).padStart(2, '0')}`;
+            eventDate.value = currentEventDate;
+            eventTitle.value = localStorage.getItem(currentEventDate) || '';
+        }
+
+        function saveEvent() {
+            localStorage.setItem(currentEventDate, eventTitle.value);
+            eventForm.style.display = 'none';
+            loadCalendar();
+        }
+
+        function deleteEvent() {
+            localStorage.removeItem(currentEventDate);
+            eventForm.style.display = 'none';
+            loadCalendar();
+        }
+
+        loadCalendar();
+    </script>
+</body>
+</html>
